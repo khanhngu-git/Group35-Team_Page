@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -13,6 +13,7 @@ import { FullPageSpinner } from '@/components/shared/LoadingSpinner'
 export default function SignInPage() {
   const router = useRouter()
   const { user, loading, signInWithEmail, signInWithGoogle } = useAuth()
+  const [authError, setAuthError] = useState<string | null>(null)
 
   const {
     register,
@@ -38,6 +39,7 @@ export default function SignInPage() {
   if (loading) return <FullPageSpinner />
 
   const onSubmit = async (data: LoginInput) => {
+    setAuthError(null)
     try {
       await signInWithEmail(data.email, data.password)
       toast.success('Signed in successfully')
@@ -47,6 +49,7 @@ export default function SignInPage() {
       if (error instanceof Error && error.message.includes('email-not-verified')) {
         toast.error('Please verify your email before signing in.')
       } else {
+        setAuthError('Incorrect Email or Password. Please Try again')
         toast.error('Invalid email or password')
       }
     }
@@ -71,7 +74,8 @@ export default function SignInPage() {
       <button
         type="button"
         onClick={handleGoogleSignIn}
-        className="font-sans flex w-full items-center justify-center gap-3 rounded-md border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition-colors hover:bg-zinc-100"
+        disabled={isSubmitting}
+        className="font-sans flex w-full items-center justify-center gap-3 rounded-md border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition-colors hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
           <path
@@ -91,7 +95,7 @@ export default function SignInPage() {
             fill="#EA4335"
           />
         </svg>
-        Continue with Google
+        {isSubmitting ? 'Signing in…' : 'Continue with Google'}
       </button>
 
       <div className="relative">
@@ -103,6 +107,15 @@ export default function SignInPage() {
         </div>
       </div>
 
+      {authError && (
+        <div
+          role="alert"
+          className="rounded-md bg-red-800 px-4 py-2.5 text-center text-sm text-white"
+        >
+          {authError}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-1.5">
           <label htmlFor="email" className="block text-center text-sm font-medium text-zinc-200">
@@ -112,7 +125,7 @@ export default function SignInPage() {
             id="email"
             type="email"
             autoComplete="email"
-            aria-invalid={!!errors.email}
+            aria-invalid={!!errors.email || !!authError}
             aria-describedby={errors.email ? 'email-error' : undefined}
             className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 shadow-sm placeholder:text-zinc-500 focus:ring-2 focus:ring-red-600 focus:outline-none aria-invalid:border-red-500"
             placeholder="you@example.com"
@@ -136,7 +149,7 @@ export default function SignInPage() {
             id="password"
             type="password"
             autoComplete="current-password"
-            aria-invalid={!!errors.password}
+            aria-invalid={!!errors.password || !!authError}
             aria-describedby={errors.password ? 'password-error' : undefined}
             className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 shadow-sm placeholder:text-zinc-500 focus:ring-2 focus:ring-red-600 focus:outline-none aria-invalid:border-red-500"
             placeholder="••••••••"
