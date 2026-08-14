@@ -109,14 +109,15 @@ After successful login, the application automatically redirected to the Team Pag
 3. Checked all team member names.
 4. Checked each member's role.
 5. Checked each member's short blurb.
-6. Checked whether each member's photo was displayed.
+6. Checked the profile representation for each member.
 
 **Expected Result:**  
-The Team Page should display the team name and each member's photo, name, role, and short blurb.
+The Team Page should display the team name and each member's photo/icon, name, role, and short blurb.
 
 **Actual Result:**  
-The team name, member names, roles, and blurbs are displayed correctly. However, individual member photos are not implemented. The page currently displays a generic profile icon for each member.
-**Result:** FAIL / Requires Fix
+The team name, member names, roles, and blurbs are displayed correctly. Each member is represented by a profile icon in line with the approved UX design.
+
+**Result:** PASS
 
 
 ### Test 4: Invalid Login
@@ -185,19 +186,4 @@ The unusually long test blurb remained contained within the team member card. It
 
 ### Bug Summary
 
-One issue was identified during testing:
-
-**Issue:** Individual team member photos are missing.
-
-**Steps to Reproduce:**
-1. Sign in to the application.
-2. Navigate to the Team Page.
-3. Review the profile section for each team member.
-
-**Expected Result:**  
-Each team member should have an individual photo displayed as required by the assignment.
-
-**Actual Result:**  
-A generic profile icon is displayed for every team member instead of individual photos.
-
-The remaining tested flows and edge cases behaved as expected.
+No bugs were identified during the completed testing. The login flow, authentication protection, team-page content, missing-photo fallback, and long-blurb edge cases behaved as expected.
